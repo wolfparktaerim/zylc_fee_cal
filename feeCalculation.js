@@ -70,14 +70,14 @@ function generateFeeDetails() {
     }
     if(studentType == 'new' && level == 's4'){ // s4 new students fee
         for (const item of feeData) {
-            if (item.hasOwnProperty("Cl+Hcl")) {
+            if (item.hasOwnProperty("2025-new")) {
                 tuitionFeePerLesson = item["2025-new"]; 
             }
         }
     }
-    if(subject == 'Hcl' && level == 's4'){ // s4 hcl fee
+    if((subject == 'Hcl' || subject == 'amath') && level == 's4'){ // s4 hcl fee
         for (const item of feeData) {
-            if (item.hasOwnProperty("Cl+Hcl")) {
+            if (item.hasOwnProperty("2025-new")) {
                 tuitionFeePerLesson = item["2025-new"]; 
             }
         }
