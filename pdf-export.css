@@ -1,0 +1,13 @@
+/* PDF export styles */
+.pdf-export table {
+    font-size: 10px;  /* Smaller font */
+    padding: 2px;
+}
+
+.pdf-export th, .pdf-export td {
+    padding: 4px;  /* Smaller padding */
+}
+
+.pdf-export th {
+    font-weight: bold;
+}
