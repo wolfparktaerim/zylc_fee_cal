@@ -43,7 +43,7 @@
                     <label for="subject" class="block text-sm font-medium text-gray-700">Subject</label>
                     <select id="subject" name="subject" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
                         <option value="Cl">华文 Chinese</option>
-                        <option value="Hcl">高华 Higher Chinese</option>
+                        <option value="Hcl" selected>高华 Higher Chinese</option>
                         <option value="Cl+Hcl">华文+高华 Chinese + Higher Chinese</option>
                         <option value="EMath">数学 Mathematics</option>
                         <option value="AMath">高数 Mathematics</option>
@@ -71,7 +71,7 @@
 
                 <div class="flex-1">
                     <label for="teacher" class="block text-sm font-medium text-gray-700">教师名 Teacher Name</label>
-                    <input type="text" id="teacher" name="teacher" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    <input type="text" id="teacher" name="teacher" placeholder="Mdm Lu" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
                 </div>
 
                 <div class="flex-1">
@@ -114,7 +114,7 @@
                     <label for="paymentFrequency" class="block text-sm font-medium text-gray-700">多久缴费一次 Payment Frequency</label>
                     <select id="paymentFrequency" name="paymentFrequency" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
                         <option value="1">每月 Monthly</option>
-                        <option value="3">每三月 Quarterly (3 Months)</option>
+                        <option value="3" selected>每三月 Quarterly (3 Months)</option>
                         <option value="6">每六月 Semi-Annually (6 Months)</option>
                         <option value="12">每年 Yearly</option>
                     </select>
