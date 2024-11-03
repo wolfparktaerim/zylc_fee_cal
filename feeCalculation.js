@@ -228,7 +228,7 @@ function downloadAsPDF() {
 
     console.log('Download button pressed');
     const element = document.getElementById('outputContainer'); // Target the entire output container
-    const filename = `${year}-${level}-${subject}-${day}-${teacher}.pdf`;
+    const filename = `${year}-${level.toUpperCase()}-${subject.toUpperCase()}-${day.toUpperCase()}-${teacher}.pdf`;
 
     // Hide the download button temporarily if it's within the same container
     const downloadButton = document.getElementById('downloadPdf');
