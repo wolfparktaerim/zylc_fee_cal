@@ -32,6 +32,7 @@ function generateFeeDetails() {
     const teacher = document.getElementById('teacher').value;
     const timeslot = document.getElementById('timeslot').value;
     const paymentFrequency = parseInt(document.getElementById('paymentFrequency').value, 10);
+    console.log('payment freq', paymentFrequency);
     const studentType = document.getElementById('studentType').value;
     const classType = document.getElementById('classType').value;
     const additionalNote = document.getElementById('additionalNote').value;
@@ -56,19 +57,34 @@ function generateFeeDetails() {
     }
 
     // Fee variations
-    let tuitionFeePerLesson = levelFees[level][0];
-    if(classType == "one-to-one"){
+    let tuitionFeePerLesson = levelFees[level][0];  // base fee 
+    if(classType == "one-to-one"){ // one-to-one fee
         tuitionFeePerLesson = levelFees[level][1];
     }
-    if(subject == "Cl+Hcl" && (level == 'p5' || level == 'p6')){
+    if(subject == "Cl+Hcl" && (level == 'p5' || level == 'p6')){  // cl+hcl duo subject fee
         for (const item of feeData) {
             if (item.hasOwnProperty("Cl+Hcl")) {
                 tuitionFeePerLesson = item["Cl+Hcl"]; 
             }
         }
     }
-    let materialFeePerMonth = levelFees[level][2];
-    if(classType == 'one-to-one'){
+    if(studentType == 'new' && level == 's4'){ // s4 new students fee
+        for (const item of feeData) {
+            if (item.hasOwnProperty("Cl+Hcl")) {
+                tuitionFeePerLesson = item["2025-new"]; 
+            }
+        }
+    }
+    if(subject == 'Hcl' && level == 's4'){ // s4 hcl fee
+        for (const item of feeData) {
+            if (item.hasOwnProperty("Cl+Hcl")) {
+                tuitionFeePerLesson = item["2025-new"]; 
+            }
+        }
+    }
+
+    let materialFeePerMonth = levelFees[level][2]; // base material fee 
+    if(classType == 'one-to-one' || paymentFrequency > 3 ){ // no material fee for some people
         materialFeePerMonth = 0;
     }
 
