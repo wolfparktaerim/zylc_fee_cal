@@ -178,7 +178,8 @@ function getHolidayDates(month, year, day) {
             // Check if the holiday falls on the target day
             if (holidayDate.getDay() === targetDay) {
                 const formattedHolidayDate = `${holidayDate.getDate()}/${monthIndex + 1}`; // Format as 'day/month'
-                holidayDates.push(formattedHolidayDate);
+                if(!holidayDates.includes(formattedHolidayDate)) holidayDates.push(formattedHolidayDate);
+                
             }
         }
     });
