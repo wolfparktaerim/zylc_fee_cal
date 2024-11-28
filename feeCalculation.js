@@ -72,6 +72,9 @@ function generateFeeDetails() {
             }
         }
     }
+    if((subject == "Hcl") && (level == 'p5' || level == 'p6')){
+        tuitionFeePerLesson = 65;
+    }
 
     let materialFeePerMonth = levelFees[level][2]; // base material fee 
     if(classType == 'one-to-one' || paymentFrequency > 3 ){ // no material fee for some people
