@@ -266,6 +266,8 @@ function downloadAsExcel() {
     const subject = document.getElementById('subject').value;
     const day = document.getElementById('day').value;
     const teacher = document.getElementById('teacher').value;
+    const msg = document.getElementById('newStudentNote').textContent;
+    const timeslot = document.getElementById('timeslot').value;
 
     // Create a temporary DOM element to parse the table
     const tempDiv = document.createElement('div');
@@ -283,6 +285,13 @@ function downloadAsExcel() {
         });
         worksheetData.push(rowData);
     });
+
+    // Add the custom header rows
+    worksheetData.unshift(
+        [`Tuition Fee Payment Details ${year} - ${level.toUpperCase()} ${subject.toUpperCase()}`],
+        [`Teacher in charge: ${teacher} | Day & Time: ${day} ${timeslot}`],
+        [] // Empty row for spacing
+    );
 
     // Create a worksheet from the extracted data
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
