@@ -58,6 +58,9 @@ function generateFeeDetails() {
             }
         }
     }
+    if(studentType == 'old' && (level == 's3')){ // s3 old students fee
+        tuitionFeePerLesson = 70;
+    }
     if (studentType == 'new' && level == 's4') { // s4 new students fee
         for (const item of feeData) {
             if (item.hasOwnProperty("2025-new")) {
