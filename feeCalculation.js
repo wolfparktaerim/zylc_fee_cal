@@ -1,9 +1,9 @@
 // load data from json files
 let feeData = [];
 let holidays = [];
+let tableHtml = null;
 
 async function loadJSONData() {
-    console.log(import.meta.env)
     feeData = JSON.parse(import.meta.env.VITE_feeData);
     holidays = JSON.parse(import.meta.env.VITE_holidays);
     holidays = [...holidays.gazettedHolidays, ...holidays.centerHolidays];
@@ -28,14 +28,14 @@ function generateFeeDetails() {
     const additionalNote = document.getElementById('additionalNote').value;
     const newStudentNoteEle = document.getElementById('newStudentNote');
     const addNoteEle = document.getElementById('addNote');
-    if(additionalNote != ''){
+    if (additionalNote != '') {
         addNoteEle.innerText = `Additional note: ${additionalNote}`;
         addNoteEle.style.visibility = 'visible';
     }
-    if(studentType == "new"){
+    if (studentType == "new") {
         newStudentNoteEle.style.display = "block";
     }
-    else{
+    else {
         newStudentNoteEle.style.display = "none";
     }
     // Fetch the fee details for the selected level
@@ -48,36 +48,36 @@ function generateFeeDetails() {
 
     // Fee variations
     let tuitionFeePerLesson = levelFees[level][0];  // base fee 
-    if(classType == "one-to-one"){ // one-to-one fee
+    if (classType == "one-to-one") { // one-to-one fee
         tuitionFeePerLesson = levelFees[level][1];
     }
-    if(subject == "Cl+Hcl" && (level == 'p5' || level == 'p6')){  // cl+hcl duo subject fee
+    if (subject == "Cl+Hcl" && (level == 'p5' || level == 'p6')) {  // cl+hcl duo subject fee
         for (const item of feeData) {
             if (item.hasOwnProperty("Cl+Hcl")) {
-                tuitionFeePerLesson = item["Cl+Hcl"]; 
+                tuitionFeePerLesson = item["Cl+Hcl"];
             }
         }
     }
-    if(studentType == 'new' && level == 's4'){ // s4 new students fee
+    if (studentType == 'new' && level == 's4') { // s4 new students fee
         for (const item of feeData) {
             if (item.hasOwnProperty("2025-new")) {
-                tuitionFeePerLesson = item["2025-new"]; 
+                tuitionFeePerLesson = item["2025-new"];
             }
         }
     }
-    if((subject == 'Hcl' || subject == 'amath') && level == 's4'){ // s4 hcl fee
+    if ((subject == 'Hcl' || subject == 'amath') && level == 's4') { // s4 hcl fee
         for (const item of feeData) {
             if (item.hasOwnProperty("2025-new")) {
-                tuitionFeePerLesson = item["2025-new"]; 
+                tuitionFeePerLesson = item["2025-new"];
             }
         }
     }
-    if((subject == "Hcl") && (level == 'p5' || level == 'p6')){
+    if ((subject == "Hcl") && (level == 'p5' || level == 'p6')) {
         tuitionFeePerLesson = 65;
     }
 
     let materialFeePerMonth = levelFees[level][2]; // base material fee 
-    if(classType == 'one-to-one' || paymentFrequency > 3 ){ // no material fee for some people
+    if (classType == 'one-to-one' || paymentFrequency > 3) { // no material fee for some people
         materialFeePerMonth = 0;
     }
 
@@ -87,7 +87,7 @@ function generateFeeDetails() {
 
     // Prepare table for monthly data
     const feeTable = document.getElementById('feeTable');
-    const tableHtml = generateMonthlyTable(year, day, tuitionFeePerLesson, materialFeePerMonth, paymentFrequency);
+    tableHtml = generateMonthlyTable(year, day, tuitionFeePerLesson, materialFeePerMonth, paymentFrequency);
     if (!tableHtml) {
         console.error('Failed to generate table HTML.');
         alert('There was an error generating the table.');
@@ -101,6 +101,8 @@ function generateFeeDetails() {
     document.getElementById('outputContainer').classList.remove('hidden');
     document.getElementById('downloadPdf').addEventListener('click', downloadAsPDF);
     document.getElementById('downloadPdf').classList.remove('hidden');
+    document.getElementById('downloadExcel').addEventListener('click', downloadAsExcel);
+    document.getElementById('downloadExcel').classList.remove('hidden');
 }
 
 // Helper function to generate the monthly fee table
@@ -116,7 +118,7 @@ function generateMonthlyTable(year, day, tuitionFeePerLesson, materialFeePerMont
             </thead>
             <tbody>
                 <tr><td class="p-2 border">Dates with Lessons 上课日期</td>${months.map(month => `<td class="p-2 border">${getLessonDates(month, year, day).join(', ')}</td>`).join('')}</tr>
-                <tr><td class="p-2 border">Dates on Break 休息日期</td>${months.map(month => `<td class="p-2 border">${getHolidayDates(month, year,day).join(', ')}</td>`).join('')}</tr>
+                <tr><td class="p-2 border">Dates on Break 休息日期</td>${months.map(month => `<td class="p-2 border">${getHolidayDates(month, year, day).join(', ')}</td>`).join('')}</tr>
                 <tr><td class="p-2 border">Number of Lessons 课程数</td>${months.map(month => `<td class="p-2 border">${calculateLessonCount(month, year, day)}</td>`).join('')}</tr>
                 <tr><td class="p-2 border">Tuition Fee per Lesson 每节课学费</td>${months.map(month => `<td class="p-2 border">${tuitionFeePerLesson}</td>`).join('')}</tr>
                <tr><td class="p-2 border">Material Fee per Month 材料费</td><td class="p-2 border text-center" colspan="${months.length}">${materialFeePerMonth}</td></tr>
@@ -133,7 +135,7 @@ function getLessonDates(month, year, day) {
     // Map month name to index (0-based for Date object)
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const monthIndex = monthNames.indexOf(month);
-    
+
     // Map day names to 0-based indices for weekdays (0=Sunday, 1=Monday, etc.)
     const dayMap = {
         "sun": 0, "mon": 1, "tue": 2, "wed": 3, "thu": 4, "fri": 5, "sat": 6
@@ -141,12 +143,12 @@ function getLessonDates(month, year, day) {
     const targetDay = dayMap[day.toLowerCase()];
     const lessonDates = [];
     const date = new Date(year, monthIndex, 1);  // Start on the first of the given month
-    
+
     while (date.getMonth() === monthIndex) {
         if (date.getDay() === targetDay) {
             // Format date as 'YYYY-MM-DD' for comparison
             const formattedLessonDate = `${date.getDate()}/${monthIndex + 1}`;  // Format as 'day/month'
-            if(!getHolidayDates(month, year, day).includes(formattedLessonDate)){
+            if (!getHolidayDates(month, year, day).includes(formattedLessonDate)) {
                 lessonDates.push(formattedLessonDate);
             }
             else {
@@ -156,24 +158,24 @@ function getLessonDates(month, year, day) {
         }
         date.setDate(date.getDate() + 1);  // Move to the next day
     }
-    
+
     return lessonDates;
 }
 
 // Function to get holiday dates for a specific month and day
 function getHolidayDates(month, year, day) {
     const holidayDates = [];
-    
+
     // Map month name to index (0-based)
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const monthIndex = monthNames.indexOf(month);
-    
+
     // Map day names to 0-based indices for weekdays (0=Sunday, 1=Monday, etc.)
     const dayMap = {
         "sun": 0, "mon": 1, "tue": 2, "wed": 3, "thu": 4, "fri": 5, "sat": 6
     };
     const targetDay = dayMap[day.toLowerCase()];
-    
+
     // Loop through holidays
     holidays.forEach(holiday => {
         const holidayDate = new Date(holiday); // Convert holiday string to Date object
@@ -181,12 +183,12 @@ function getHolidayDates(month, year, day) {
             // Check if the holiday falls on the target day
             if (holidayDate.getDay() === targetDay) {
                 const formattedHolidayDate = `${holidayDate.getDate()}/${monthIndex + 1}`; // Format as 'day/month'
-                if(!holidayDates.includes(formattedHolidayDate)) holidayDates.push(formattedHolidayDate);
-                
+                if (!holidayDates.includes(formattedHolidayDate)) holidayDates.push(formattedHolidayDate);
+
             }
         }
     });
-    
+
     return holidayDates;
 }
 
@@ -253,4 +255,78 @@ function downloadAsPDF() {
             // Ensure the button is visible again in case of error
             downloadButton.style.display = 'block';
         });
+
+
+}
+
+function downloadAsExcel() {
+    // Get the generated table HTML
+    const year = parseInt(document.getElementById('year').value, 10);
+    const level = document.getElementById('level').value;
+    const subject = document.getElementById('subject').value;
+    const day = document.getElementById('day').value;
+    const teacher = document.getElementById('teacher').value;
+
+    // Create a temporary DOM element to parse the table
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = tableHtml;
+    const table = tempDiv.querySelector('table');
+
+    // Convert the table into a SheetJS-compatible data structure
+    const worksheetData = [];
+    const rows = table.querySelectorAll('tr');
+
+    rows.forEach(row => {
+        const rowData = [];
+        row.querySelectorAll('td, th').forEach(cell => {
+            rowData.push(cell.innerText.trim());
+        });
+        worksheetData.push(rowData);
+    });
+
+    // Create a worksheet from the extracted data
+    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+
+    // Apply styles to the worksheet
+    const range = XLSX.utils.decode_range(worksheet['!ref']); // Get the range of the sheet
+    for (let row = range.s.r; row <= range.e.r; row++) {
+        for (let col = range.s.c; col <= range.e.c; col++) {
+            const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
+            const cell = worksheet[cellAddress] || {};
+            cell.s = {
+                border: {
+                    top: { style: 'thin', color: { rgb: '000000' } },
+                    bottom: { style: 'thin', color: { rgb: '000000' } },
+                    left: { style: 'thin', color: { rgb: '000000' } },
+                    right: { style: 'thin', color: { rgb: '000000' } }
+                },
+                alignment: {
+                    vertical: 'center',
+                    horizontal: 'center'
+                }
+            };
+            worksheet[cellAddress] = cell; // Update the cell in the worksheet
+        }
+    }
+
+    // Auto-adjust column widths
+    const columnWidths = worksheetData[0].map((col, index) => {
+        const maxLength = worksheetData.reduce((max, row) => {
+            const cellValue = row[index] || '';
+            return Math.max(max, cellValue.length);
+        }, 10); // Default minimum width
+        return { wch: maxLength + 2 }; // Add padding
+    });
+    worksheet['!cols'] = columnWidths;
+
+    // Create a workbook and append the worksheet
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Monthly Table');
+
+    // Define the filename
+    const filename = `${year}-${level.toUpperCase()}-${subject.toUpperCase()}-${day.toUpperCase()}-${teacher}.xlsx`;
+
+    // Save the workbook
+    XLSX.writeFile(workbook, filename);
+    console.log('Excel download completed.');
 }
