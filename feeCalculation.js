@@ -47,10 +47,17 @@ function generateFeeDetails() {
     }
 
     // Fee variations
+
+    // One-to-One fee
     let tuitionFeePerLesson = levelFees[level][0];  // base fee 
     if (classType == "one-to-one") { // one-to-one fee
         tuitionFeePerLesson = levelFees[level][1];
     }
+    if (level == 's3' && subject == 'Cl') {
+        tuitionFeePerLesson = 160;
+    }
+
+    // Class fee
     if (subject == "Cl+Hcl" && (level == 'p5' || level == 'p6')) {  // cl+hcl duo subject fee
         for (const item of feeData) {
             if (item.hasOwnProperty("Cl+Hcl")) {
@@ -58,7 +65,7 @@ function generateFeeDetails() {
             }
         }
     }
-    if(studentType == 'old' && (level == 's3')){ // s3 old students fee
+    if (studentType == 'old' && (level == 's3')) { // s3 old students fee
         tuitionFeePerLesson = 70;
     }
     if (studentType == 'new' && level == 's4') { // s4 new students fee
