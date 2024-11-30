@@ -1,4 +1,4 @@
-// load data from json files
+// load data from env file  (global)
 let feeData = [];
 let holidays = [];
 let tableHtml = null;
@@ -6,24 +6,24 @@ let tableHtml = null;
 async function loadJSONData() {
     feeData = JSON.parse(import.meta.env.VITE_feeData);
     holidays = JSON.parse(import.meta.env.VITE_holidays);
-    holidays = [...holidays.gazettedHolidays, ...holidays.centerHolidays];
 }
 loadJSONData().then(() => {
     document.getElementById('generate').addEventListener('click', generateFeeDetails);
 });
+// finish loading data 
+
 
 function generateFeeDetails() {
     console.log("Generate button clicked.");
-    // Get form values
     const year = parseInt(document.getElementById('year').value, 10);
     const level = document.getElementById('level').value;
     const subject = document.getElementById('subject').value;
     const day = document.getElementById('day').value;
+    const studentType = document.getElementById('studentType').value;
+    let feeData1 = feeData[studentType];
     const teacher = document.getElementById('teacher').value;
     const timeslot = document.getElementById('timeslot').value;
     const paymentFrequency = parseInt(document.getElementById('paymentFrequency').value, 10);
-    // console.log('payment freq', paymentFrequency);
-    const studentType = document.getElementById('studentType').value;
     const classType = document.getElementById('classType').value;
     const additionalNote = document.getElementById('additionalNote').value;
     const newStudentNoteEle = document.getElementById('newStudentNote');
@@ -39,7 +39,7 @@ function generateFeeDetails() {
         newStudentNoteEle.style.display = "none";
     }
     // Fetch the fee details for the selected level
-    const levelFees = feeData.find(item => Object.keys(item)[0] === level);
+    const levelFees = feeData1.find(item => Object.keys(item)[0] === level);
     if (!levelFees) {
         console.error('Level not found:', level);
         alert('Selected level does not exist.');
@@ -48,46 +48,43 @@ function generateFeeDetails() {
 
     // Fee variations
 
-    // One-to-One fee
     let tuitionFeePerLesson = levelFees[level][0];  // base fee 
-    if (classType == "one-to-one") { // one-to-one fee
+
+    // Cl vs HCl fee
+    if (classType == 'class' && subject == 'Cl+Hcl' ){
+        if(level == 'p5'){
+            if(studentType == 'old'){
+                tuitionFeePerLesson = 65;
+            }
+            if(studentType == 'new'){
+                tuitionFeePerLesson = 67.50;
+            }
+        }
+        if(level == 'p6'){
+            if(studentType == 'old'){
+                tuitionFeePerLesson = 65;
+            }
+            if(studentType == 'new'){
+                tuitionFeePerLesson = 70;
+            }
+        }
+    }
+
+
+    // One-to-One Normal vs Special 
+    if (classType == "one-to-one" || classType == 'one-to-one-special') { // one-to-one fee
         tuitionFeePerLesson = levelFees[level][1];
-    }
-    if (level == 's3' && subject == 'Cl') {
-        tuitionFeePerLesson = 160;
+        if(classType == 'one-to-one-special'){
+            let specialLevels = ['p6', 's1', 's2', 's3', 's4'];
+            if(specialLevels.includes(level)){
+                tuitionFeePerLesson -= 20;
+            }
+        }
     }
 
-    // Class fee
-    if (subject == "Cl+Hcl" && (level == 'p5' || level == 'p6')) {  // cl+hcl duo subject fee
-        for (const item of feeData) {
-            if (item.hasOwnProperty("Cl+Hcl")) {
-                tuitionFeePerLesson = item["Cl+Hcl"];
-            }
-        }
-    }
-    if (studentType == 'old' && (level == 's3')) { // s3 old students fee
-        tuitionFeePerLesson = 70;
-    }
-    if (studentType == 'new' && level == 's4') { // s4 new students fee
-        for (const item of feeData) {
-            if (item.hasOwnProperty("2025-new")) {
-                tuitionFeePerLesson = item["2025-new"];
-            }
-        }
-    }
-    if ((subject == 'Hcl' || subject == 'amath') && level == 's4') { // s4 hcl fee
-        for (const item of feeData) {
-            if (item.hasOwnProperty("2025-new")) {
-                tuitionFeePerLesson = item["2025-new"];
-            }
-        }
-    }
-    if ((subject == "Hcl") && (level == 'p5' || level == 'p6')) {
-        tuitionFeePerLesson = 65;
-    }
-
+    // Material fee 
     let materialFeePerMonth = levelFees[level][2]; // base material fee 
-    if (classType == 'one-to-one' || paymentFrequency > 3) { // no material fee for some people
+    if (classType == 'one-to-one' || paymentFrequency > 3 ||  classType == 'one-to-one-special') { // no material fee for some people
         materialFeePerMonth = 0;
     }
 
@@ -175,7 +172,17 @@ function getLessonDates(month, year, day) {
 // Function to get holiday dates for a specific month and day
 function getHolidayDates(month, year, day) {
     const holidayDates = [];
-
+    let holidays1 = [];
+    if (year in holidays) {
+        holidays1 = holidays[year];
+        holidays1 = [
+            ...(holidays1.gazettedHolidays || []),
+            ...(holidays1.centerHolidays || [])
+        ];
+    }
+    else {
+        return holidayDates;
+    }
     // Map month name to index (0-based)
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const monthIndex = monthNames.indexOf(month);
@@ -187,7 +194,7 @@ function getHolidayDates(month, year, day) {
     const targetDay = dayMap[day.toLowerCase()];
 
     // Loop through holidays
-    holidays.forEach(holiday => {
+    holidays1.forEach(holiday => {
         const holidayDate = new Date(holiday); // Convert holiday string to Date object
         if (holidayDate.getFullYear() === year && holidayDate.getMonth() === monthIndex) {
             // Check if the holiday falls on the target day
@@ -313,6 +320,10 @@ function downloadAsExcel() {
             const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
             const cell = worksheet[cellAddress] || {};
             cell.s = {
+                font: {
+                    name: 'Arial', // Set font to Arial
+                    sz: 12,        // Set font size to 12
+                },
                 border: {
                     top: { style: 'thin', color: { rgb: '000000' } },
                     bottom: { style: 'thin', color: { rgb: '000000' } },
@@ -321,7 +332,8 @@ function downloadAsExcel() {
                 },
                 alignment: {
                     vertical: 'center',
-                    horizontal: 'center'
+                    horizontal: 'center',
+                    wrapText: true // Enable text wrapping
                 }
             };
             worksheet[cellAddress] = cell; // Update the cell in the worksheet

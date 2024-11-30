@@ -48,8 +48,7 @@
                     <label for="subject" class="block text-sm font-medium text-gray-700">Subject</label>
                     <select id="subject" name="subject"
                         class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
-                        <option value="Cl">华文 Chinese</option>
-                        <option value="Hcl" selected>高华 Higher Chinese</option>
+                        <option value="Cl" selected>华文 Chinese</option>
                         <option value="Cl+Hcl">华文+高华 Chinese + Higher Chinese</option>
                         <option value="EMath">数学 Elementary Mathematics</option>
                         <option value="AMath">高数 Additional Mathematics</option>
@@ -86,6 +85,7 @@
                     <label for="timeslot" class="block text-sm font-medium text-gray-700">时间段 Timeslot</label>
                     <select id="timeslot" name="timeslot"
                         class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                        <option disabled>--- 上午 Morning ---</option>
                         <option>8:00am-10:00am</option>
                         <option>8:15am-10:15am</option>
                         <option>8:30am-10:30am</option>
@@ -102,6 +102,7 @@
                         <option>11:15am-1:15pm</option>
                         <option>11:30am-1:30pm</option>
                         <option>11:45am-1:45pm</option>
+                        <option disabled>--- 下午 Afternoon ---</option>
                         <option>12:00pm-2:00pm</option>
                         <option>12:15pm-2:15pm</option>
                         <option>12:30pm-2:30pm</option>
@@ -169,6 +170,7 @@
                         class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
                         <option value="class">多人课堂 Class</option>
                         <option value="one-to-one">一对一 One-to-one</option>
+                        <option value="one-to-one-special">一对一（内部学生） One-to-one (Special)</option>
                     </select>
                 </div>
             </div>
