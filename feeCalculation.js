@@ -37,6 +37,10 @@ function generateFeeDetails() {
     }
     else {
         newStudentNoteEle.style.display = "none";
+        if(studentType == 'co-new'){
+            newStudentNoteEle.style.display = 'block';
+            newStudentNoteEle.innerText = "New student note: Upon your initial payment, an additional one-time deposit of $100 (refundable) and a registration fee of $50 are required. This fee is not yet included in the table."
+        }
     }
     // Fetch the fee details for the selected level
     const levelFees = feeData1.find(item => Object.keys(item)[0] === level);
