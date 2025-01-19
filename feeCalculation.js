@@ -61,10 +61,10 @@ function generateFeeDetails() {
         newStudentNoteEle.innerText = "";
         // Create text nodes
         const englishText = document.createTextNode(
-          "New student note: Upon your initial payment, an additional one-time deposit of $100 (refundable) and a registration fee of $50 are required. This fee is not yet included in the table."
+          "New student note: Upon your initial payment, an additional one-time deposit of $100 (refundable) is required. This fee is not yet included in the table."
         );
         const chineseText = document.createTextNode(
-          "新生备注： 首次付费时，需要支付额外的一次性定金 $100 （可退）和注册费 $50。该费用并未包括在您的收费表中。"
+          "新生备注： 首次付费时，需要支付额外的一次性定金 $100 （可退）。该费用并未包括在您的收费表中。"
         );
         // Append the English text
         newStudentNoteEle.appendChild(englishText);
